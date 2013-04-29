@@ -1,6 +1,6 @@
-lick = require "lick"
-lick.reset = true
-lick.debug = true
+--lick = require "lick"
+--lick.reset = true
+--lick.debug = true
 totalTicks = 0
 gameTicks = 0
 FRAME_RATE = 60
