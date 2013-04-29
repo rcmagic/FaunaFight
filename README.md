@@ -1,5 +1,5 @@
 Fauna Fighter
-Created for Ludum Dare Compo 2013. Topic: Minimal
+Created for Ludum Dare Compo 26. Topic: Minimalism
 
 Code and Art copright 2013 Chase LaCas <rclacas@gmail.com>
 
