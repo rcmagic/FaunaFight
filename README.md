@@ -4,7 +4,7 @@ Created for Ludum Dare Compo 26. Topic: Minimalism
 Code and Art copyright 2013 Chase LaCas <rclacas@gmail.com>
 
 Fauna Fighter is a 2 player competitive fighting game that requires only 3 buttons.
-The first two five rounds wins!
+The first to five rounds wins!
 
 Controls are Left, Right, and Throw
 
@@ -30,4 +30,4 @@ https://github.com/headchant/LICK
 Source for Fauna Fighter is available at.
 https://github.com/rcmagic/FaunaFight
 
-Special Thanks to RunJumpDev <http://www.runjumpdev.org> and Aaesome Inc <http://www.awesomeinc.org>
+Special Thanks to RunJumpDev <http://www.runjumpdev.org> and Awesome Inc <http://www.awesomeinc.org>
