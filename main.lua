@@ -37,8 +37,10 @@ function Player:New()
 		vel = {x = 0, y = 0},
 		acc = {x = 0, y = 0},
 		config = {a = nil, b = nil},
-		inputs = {a = false, b = false},
+		inputs = {a = false, b = false, c = false},
+		joyinputs = {a = false, b = false, c = false},
 		inputsDown = {},
+		joyinputsDown = {},
 
 		isHit = false,
 		hitType = "",
@@ -70,11 +72,11 @@ Mallard = {
 			leave = function(player)
 				player.vel.x = 0
 				if player.flip then
-					if player.inputs.a then player.vel.x = 10
-					elseif player.inputs.b then player.vel.x = -8 end
+					if player.inputs.a or player.joyinputs.a then player.vel.x = 10
+					elseif player.inputs.b or player.joyinputs.b then player.vel.x = -8 end
 				else 
-					if player.inputs.a then player.vel.x = -8
-					elseif player.inputs.b then player.vel.x = 10 end
+					if player.inputs.a or player.joyinputs.a then player.vel.x = -8
+					elseif player.inputs.b or player.joyinputs.b then player.vel.x = 10 end
 				end
 				-- We only adjust the side the player facing during idle state
 				if (player.pos.x > player.enemy.pos.x) ~= player.flip then
@@ -90,7 +92,7 @@ Mallard = {
 					--return "hit"
 				end
 				-- Activate the throw when the c button is pressed
-				if player.inputsDown["c"] then
+				if player.inputsDown["c"] or player.joyinputsDown["c"] then
 					player.vel.x = 0
 
 					return "throw"
@@ -113,11 +115,11 @@ Mallard = {
 			leave = function(player)
 				player.vel.x = 0
 				if player.flip then
-					if player.inputs.a then player.vel.x = 10
-					elseif player.inputs.b then player.vel.x = -8 end
+					if player.inputs.a or player.joyinputs.a then player.vel.x = 10
+					elseif player.inputs.b or player.joyinputs.b then player.vel.x = -8 end
 				else 
-					if player.inputs.a then player.vel.x = -8
-					elseif player.inputs.b then player.vel.x = 10 end
+					if player.inputs.a or player.joyinputs.a then player.vel.x = -8
+					elseif player.inputs.b or player.joyinputs.b then player.vel.x = 10 end
 				end
 				-- We only adjust the side the player facing during idle state
 				if (player.pos.x > player.enemy.pos.x) ~= player.flip then
@@ -133,7 +135,7 @@ Mallard = {
 					--return "hit"
 				end
 				-- Activate the throw when the c button is pressed
-				if player.inputsDown["c"] then
+				if player.inputsDown["c"] or player.joyinputsDown["c"] then
 					player.vel.x = 0
 
 					return "throw"
@@ -302,7 +304,9 @@ function reset()
 
 	-- Assign player input configuration
 	players[1].config = { a = "a", b = "s", c = "d"}
+	players[1].joyconfig = { a = "left", b = "right", c = "button1" }
 	players[2].config = { a = "o", b = "p", c = "["}
+	players[2].joyconfig = { a = "left", b = "right", c = "button1" }
 	for i,player in ipairs(players) do
 		player.move = player.character.moves.idle
 		player.stats = playerStats[i]
@@ -393,6 +397,7 @@ function love.update(dt)
 		gameTicks = gameTicks + 1
 		UpdatePhysics()
 		CheckCollisions()
+		CheckJoysticks()
 
 		for i, player in ipairs(players) do
 			-- Reset events that only last one frame
@@ -430,6 +435,7 @@ function love.update(dt)
 
 			for key, value in pairs(player.inputs) do
 				player.inputsDown[key] = false
+				player.joyinputsDown[key] = false
 
 			end
 	
@@ -481,6 +487,46 @@ function love.keyreleased(key)
 			if value == key then player.inputs[input] = false end
 		end
 	end
+end
+
+function CheckJoysticks()
+	for i, player in ipairs(players) do
+		if player.inputEnabled then
+			local axis = love.joystick.getAxis(i, 1)
+			if axis < 0 then
+				player.joyinputs['a'] = true
+				player.joyinputsDown['a'] = true
+				player.joyinputs['b'] = false
+			elseif axis > 0 then
+				player.joyinputs['b'] = true
+				player.joyinputsDown['b'] = true
+				player.joyinputs['a'] = false
+			else
+				if not player.inputsDown['a'] then
+					player.joyinputs['a'] = false
+				end
+				if not player.inputsDown['b'] then
+					player.joyinputs['b'] = false
+				end
+			end
+		else
+			if not player.inputsDown['a'] then
+				player.joyinputs['a'] = false
+			end
+			if not player.inputsDown['b'] then
+				player.joyinputs['b'] = false
+			end
+		end
+	end
+end
+
+function love.joystickpressed(joystick, button)
+	players[joystick].joyinputs['c'] = true
+	players[joystick].joyinputsDown['c'] = true
+end
+
+function love.joystickreleased(joystick, button)
+	players[joystick].joyinputs['c'] = false
 end
 
 function BoxesCollide(a, b)
